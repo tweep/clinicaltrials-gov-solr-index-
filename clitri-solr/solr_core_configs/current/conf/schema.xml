@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<schema name="sample-schema" version="1.5">
+  <types>
+   <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+   <fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0"/>
+
+  <!-- START jhv change -->
+
+    <!-- does not split on whitespace -->
+    <!-- matches case-sensitve and case-insensitve queries -->
+    <!-- builds nedge gram for index ! --> 
+
+   <fieldType name="text_key" class="solr.TextField" positionIncrementGap="100">
+      <analyzer type="index">
+        <!-- we index all fields and diguest a term like : lung -> l lu lun lung -->  
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+        <filter class="solr.EdgeNGramFilterFactory" minGramSize="1" maxGramSize="25" side="front"/>
+      </analyzer>
+      <analyzer type="query">
+        <!-- we query the index lower-case - we do NOT diguest the query term "lung" into l,lu,lun,lung ... we only query with the FULL term  -->
+        <!-- if we use the EdgeNGram filter here, we will get DIFFERENT results ( for term "lung" we get all results for l, lu ( i.e. liver would be returned as well  -->
+        <tokenizer class="solr.KeywordTokenizerFactory"/>
+        <filter class="solr.LowerCaseFilterFactory"/>
+      </analyzer>
+   </fieldType> 
+
+
+    <!-- END jhv change -->
+
+  </types>
+
+
+ <fields>   
+  <!-- jhv gcell change --> 
+  <field name="id"                 type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="url"                type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="download_date"      type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="brief_title"        type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="brief_summary"      type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="overall_status"     type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="phase"              type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/>  
+  <field name="condition"          type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/>  
+  <field name="intervention_type"  type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/>  
+  <field name="intervention_name"  type="string"       indexed="true"  stored="true"  multiValued="false" required="false"/>  
+
+
+
+
+  <!-- copy field directives for type-ahead -->  
+
+  <!-- 
+  <field name="ta_cname"             type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_cl_name"           type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_primary_tissue"    type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_tissue_diagnosis"  type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_clid_prefixed"     type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_supplier"          type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_species"           type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_ethnicity"         type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_morphology"        type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+  <field name="ta_age_category"      type="text_key"   indexed="true"  stored="true"  multiValued="false" required="false"/> 
+
+	 <copyField source="cname"             dest="ta_cname"/> 
+	 <copyField source="cl_name"           dest="ta_cl_name"/> 
+	 <copyField source="primary_tissue"    dest="ta_primary_tissue"/> 
+	 <copyField source="supplier"          dest="ta_supplier"/> 
+	 <copyField source="tissue_diagnosis"  dest="ta_tissue_diagnosis"/> 
+	 <copyField source="clid_prefixed"     dest="ta_clid_prefixed"/> 
+	 <copyField source="species"           dest="ta_species"/> 
+	 <copyField source="ethnicity"         dest="ta_ethnicity"/> 
+	 <copyField source="morphology"        dest="ta_morphology"/> 
+	 <copyField source="age_category"      dest="ta_age_category"/>  
+
+  --> 
+
+
+  <field name="type"      type="string"   indexed="true"  stored="true"  multiValued="false" /> 
+  <field name="name"      type="string"   indexed="true"  stored="true"  multiValued="false" /> 
+  <field name="core0"     type="string"   indexed="true"  stored="true"  multiValued="false" /> 
+  <field name="_version_" type="long"     indexed="true"  stored="true"/>
+  <field name="text"      type="string"   indexed="true"  stored="true"  multiValued="false" /> 
+
+ <!-- START jhv change -->
+
+   <field name="sample_logic_name"              type="text_key"          indexed="true"  stored="true" />
+   <field name="sample_samplehub_sample_id"     type="text_key"          indexed="true"  stored="true" />
+   <field name="location_bam"                   type="string"            indexed="false"  stored="true" />
+   <field name="location_vcf"                   type="string"            indexed="false"  stored="true" />
+   <!-- END jhv change --> 
+
+ </fields>
+
+ <!-- field to use to determine and enforce document uniqueness. -->
+ <uniqueKey>id</uniqueKey>
+
+ <!-- field for the QueryParser to use when an explicit fieldname is absent -->
+ <defaultSearchField>name</defaultSearchField>
+
+ <!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
+ <solrQueryParser defaultOperator="OR"/>
+</schema>
+

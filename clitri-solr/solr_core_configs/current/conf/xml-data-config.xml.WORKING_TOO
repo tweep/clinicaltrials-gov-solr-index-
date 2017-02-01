@@ -1,0 +1,23 @@
+
+<dataConfig>
+   <dataSource name="clitri" type="FileDataSource" encoding="UTF-8" /> 
+     <document>
+       <entity name="v_cell_line"  
+               dataSource="clitri"
+               processor="XPathEntityProcessor"
+               url="/gne/home/vogelj4/xml/example.xml"
+               forEach="/clinical_study/">
+
+              <field column="brief_title"        xpath="/clinical_study/brief_title" />
+              <field column="brief_summary"      xpath="/clinical_study/brief_summary/textblock" />
+              <field column="overall_status"     xpath="/clinical_study/overall_status" />
+              <field column="phase"              xpath="/clinical_study/phase" />
+              <field column="condition"          xpath="/clinical_study/condition" />
+              <field column="intervention_type"  xpath="/clinical_study/intervention/intervention_type" />
+              <field column="intervention_name"  xpath="/clinical_study/intervention/intervention_name" />
+              <field column="study_type"         xpath="/clinical_study/study_type" />
+
+        </entity> 
+     </document> 
+</dataConfig>
+

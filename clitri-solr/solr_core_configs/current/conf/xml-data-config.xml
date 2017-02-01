@@ -1,0 +1,37 @@
+
+<dataConfig>
+   <dataSource name="myfilereader" type="FileDataSource" encoding="UTF-8" /> 
+     <document>
+       <entity name="jc"  
+               dataSource="null" 
+               processor="FileListEntityProcessor" 
+               fileName="^.*\.xml$"
+               recursive="true" 
+               baseDir="/gne/home/vogelj4/xml"  
+             >
+            <entity name="x" rootEntry="true"
+               dataSource="myfilereader"
+               processor="XPathEntityProcessor"
+               url="${jc.fileAbsolutePath}"
+               stream="false"
+               transformer="LogTransformer"
+               logTemplate=" processing ${xml_file.fileAbsolutePath}" 
+               logLevel="info" 
+               forEach="/clinical_study/"
+             >
+
+              <field column="download_date"      xpath="/clinical_study/required_header/download_date" />
+              <field column="url"                xpath="/clinical_study/required_header/url" />
+              <field column="brief_title"        xpath="/clinical_study/brief_title" />
+              <field column="brief_summary"      xpath="/clinical_study/brief_summary/textblock" />
+              <field column="overall_status"     xpath="/clinical_study/overall_status" />
+              <field column="phase"              xpath="/clinical_study/phase" />
+              <field column="condition"          xpath="/clinical_study/condition" />
+              <field column="intervention_type"  xpath="/clinical_study/intervention/intervention_type" />
+              <field column="intervention_name"  xpath="/clinical_study/intervention/intervention_name" />
+              <field column="study_type"         xpath="/clinical_study/study_type" />
+            </entity> 
+        </entity> 
+     </document> 
+</dataConfig>
+
